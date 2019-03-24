@@ -1,14 +1,13 @@
 const express = require("express");
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const Appareil = require('./models/appareil');
-
+const appareilsRoutes = require("./manage-appareils/appareils.routes");
 const bcrypt = require('bcrypt');
 const User = require('./models/user');
 const jwt = require('jsonwebtoken');
 
-const router = express.Router();
 const app = express();
+
 
 app.use(bodyParser.json());
 
@@ -34,140 +33,12 @@ mongoose.connect('mongodb+srv://abbes2:PPVuEo3StPSIQD01@cluster0-zhoit.mongodb.n
         console.log(error)
     }
 );
-router.post('/api/appareils', (req, res, next) => {
-    console.log(req.body);
-    const appareil = new Appareil({
-        name: req.body.name,
-        status: req.body.status
-    })
-    appareil.save()
-        .then(
-            () => {
-                res.status(201).json({
-                    message: "Appareil Added success"
-                });
-            }
-        ).catch(
-        (error) => {
-            res.status(400).json({
-                error: "Appareil Not Added !!!!!!!!!!! " + error
-            });
-        }
-    )
 
-});
-router.get('/api/appareils', (req, res, next) => {
-    //console.log(req.body);
-
-    Appareil.find()
-        .then(
-            (data) => {
-
-                //console.log(data);
-                res.status(201).json(data);
-
-            }
-        ).catch(
-        (error) => {
-            res.status(400).json({
-                error: "Appareil Not !!!!!!!!!!! " + error
-            });
-        }
-    )
-
-});
-router.get('/api/appareils/:id', (req, res, next) => {
-    //console.log(req.body);
-    console.log('req.params._id')
-    console.log(req.params.id)
-
-    Appareil.findOne({
-        _id: req.params.id
-    })
-        .then(
-            (data) => {
-                console.log('Appareil By Id ');
-                console.log(data);
-                res.status(201).json(data);
-            }
-        ).catch(
-        (error) => {
-            res.status(400).json({
-                error: "Appareil Not !!!!!!!!!!! " + error
-            });
-        }
-    )
-
-});
-router.get('/api/appareils', (req, res, next) => {
-    //console.log(req.body);
-
-    Appareil.find()
-        .then(
-            (data) => {
-
-                //console.log(data);
-                res.status(201).json(data);
-
-            }
-        ).catch(
-        (error) => {
-            res.status(400).json({
-                error: "Appareil Not !!!!!!!!!!! " + error
-            });
-        }
-    )
-
-});
-router.get('/api/appareils/delete/:id', (req, res, next) => {
-    Appareil.deleteOne({
-        _id: req.params.id
-    })
-        .then(
-            (data) => {
-                console.log('Delete Appareil By Id ');
-                console.log(data);
-                res.status(201).json(data);
-            }
-        ).catch(
-        (error) => {
-            res.status(400).json({
-                error: "Delete Appareil Not !!!!!!!!!!! " + error
-            });
-        }
-    )
-
-});
-router.put('/api/appareils/:id', (req, res, next) => {
-    console.log(req.body);
-    const appareil = new Appareil({
-        _id: req.body._id,
-        name: req.body.name,
-        status: req.body.status
-    })
-
-    Appareil.updateOne({
-        _id: req.params.id
-    }, appareil)
-        .then(
-            () => {
-                res.status(201).json({
-                    message: "Appareil updated success"
-                });
-            }
-        ).catch(
-        (error) => {
-            res.status(400).json({
-                error: "Appareil Not updated !!!!!!!!!!! " + error
-            });
-        }
-    )
-
-});
+app.use('/api/appareils', appareilsRoutes);
 
 //*****auth *****//
 
-router.post('/api/users/signup', (req, res) => {
+app.post('/api/users/signup', (req, res) => {
     bcrypt.hash(req.body.password, 10)
         .then(
             (hash) => {
@@ -191,7 +62,7 @@ router.post('/api/users/signup', (req, res) => {
             }
         )
 });
-router.post('/api/users/login', (req, res) => {
+app.post('/api/users/login', (req, res) => {
     User.findOne({
         email: req.body.email
     })
