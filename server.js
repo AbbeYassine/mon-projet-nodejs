@@ -33,6 +33,7 @@ const errorHandler = error => {
         default:
             throw error;
     }
+
 };
 
 const server = http.createServer(app);
@@ -45,3 +46,4 @@ server.on('listening', () => {
 });
 
 server.listen(port);
+

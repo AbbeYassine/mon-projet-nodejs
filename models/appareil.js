@@ -5,4 +5,4 @@ const appareil = mongoose.Schema({
     status: {type: Boolean, required: true}
 });
 
-module.exports = mongoose.model('Appareil',appareil);
+module.exports = mongoose.model('Appareil', appareil);
